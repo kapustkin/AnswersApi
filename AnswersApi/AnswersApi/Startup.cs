@@ -1,4 +1,6 @@
+using AnswersApi.Common.Interfaces;
 using AnswersApi.Filters;
+using AnswersApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -18,6 +20,7 @@ namespace AnswersApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));       
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -31,6 +34,8 @@ namespace AnswersApi
                     options.Filters.Add(typeof(AuditActionFilter));
                 }
             );
+
+            AddServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +58,15 @@ namespace AnswersApi
             {
                 endpoints.MapControllers();
             });
+        }
+
+        /// <summary>
+        ///  Метод добавляет сервисы в ДИ
+        /// </summary>
+        /// <param name="services">Коллекция сервисов</param>
+        private void AddServices(IServiceCollection services)
+        {
+            services.AddScoped<IAnswersService, AnswersService>();
         }
     }
 }

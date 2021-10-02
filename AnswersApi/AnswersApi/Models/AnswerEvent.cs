@@ -19,7 +19,7 @@ namespace AnswersApi.Models
         /// Тип действия
         /// </summary>
         [JsonPropertyName("type")]
-        public AnswerEventTypeEnum Type { get; set; }
+        public AnswerEventType Type { get; set; }
 
         /// <summary>
         /// Время у клиента

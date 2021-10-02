@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnswersApi.Services", "Answ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnswersApi.Context", "AnswersApi.Context\AnswersApi.Context.csproj", "{1B3EA1FC-6D34-4B3A-A9A7-167C8AD66C43}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnswersApi.Tests", "AnswersApi.Tests\AnswersApi.Tests.csproj", "{AC3B2064-37A8-4E92-9BE1-C10AAA035084}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{1B3EA1FC-6D34-4B3A-A9A7-167C8AD66C43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B3EA1FC-6D34-4B3A-A9A7-167C8AD66C43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B3EA1FC-6D34-4B3A-A9A7-167C8AD66C43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC3B2064-37A8-4E92-9BE1-C10AAA035084}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC3B2064-37A8-4E92-9BE1-C10AAA035084}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC3B2064-37A8-4E92-9BE1-C10AAA035084}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC3B2064-37A8-4E92-9BE1-C10AAA035084}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
