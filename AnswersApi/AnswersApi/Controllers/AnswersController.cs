@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AnswersApi.Common.Interfaces;
+﻿using AnswersApi.Common.Interfaces;
 using AnswersApi.Controllers.Base;
 using AnswersApi.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AnswersApi.Controllers
 {
@@ -35,13 +35,13 @@ namespace AnswersApi.Controllers
         /// <param name="answerId">Идентификатор ответа</param>
         /// <param name="files">Список файлов</param>
         /// <returns></returns>
-        [HttpPost("attachments")]
+        [HttpPost("attachments"), DisableRequestSizeLimit]
         public async Task<ActionResult> Attachments(Guid answerId, IEnumerable<IFormFile> files)
         {
             var result = await _answersService.AttachmentFiles(answerId, files);
             return Result(result);
         }
-        
+
         /// <summary>
         /// Метод сохраняет события
         /// </summary>
