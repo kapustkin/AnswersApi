@@ -3,6 +3,7 @@ using AnswersApi.Common.Models;
 using AnswersApi.Common.Models.Base;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AnswersApi.Services
@@ -33,36 +34,12 @@ namespace AnswersApi.Services
                 ErrorMessage = ErrorMessageSaveAttachments
             };
 
-            var result = new DataResult<IList<AttachmentResult>>()
+            var result = await Task.WhenAll(files.Select(s => GetAttachmentResultAsync(answerId, s)));
+
+            return new DataResult<IList<AttachmentResult>>
             {
-                Result = new List<AttachmentResult>()
+                Result = result.ToList()
             };
-
-            foreach (var file in files)
-            {
-                var attachmentResult = new AttachmentResult
-                {
-                    FileName = file.FileName
-                };
-
-                result.Result.Add(attachmentResult);
-
-                var upload = await _storageService.UploadAsync(file.Stream, file.FileName, file.MimeType);
-                if (upload.IsNonSuccess)
-                {
-                    continue;
-                }
-
-                var saveAttachment = await _dataBaseService.SaveAttachment(answerId, file);
-                if (saveAttachment.IsNonSuccess)
-                {
-                    continue;
-                }
-
-                attachmentResult.IsSuccess = true;
-            }
-
-            return result;
         }
 
         public async Task<DataResult<bool?>> SaveEvents(Guid answerId, IEnumerable<AnswerEvent> events)
@@ -78,6 +55,36 @@ namespace AnswersApi.Services
             }
 
             return new DataResult<bool?> { Result = true };
+        }
+
+        /// <summary>
+        /// Метод загружает файл в хранилище и делает запись в базу данных
+        /// </summary>
+        /// <param name="answerId">Идентификатор ответа</param>
+        /// <param name="file">Файл для загрузки</param>
+        /// <returns></returns>
+        private async Task<AttachmentResult> GetAttachmentResultAsync(Guid answerId, AttachmentFile file)
+        {
+            var attachmentResult = new AttachmentResult
+            {
+                FileName = file.FileName
+            };
+
+            var upload = await _storageService.UploadAsync(file.Stream, file.FileName, file.MimeType);
+            if (upload.IsNonSuccess)
+            {
+                return attachmentResult;
+            }
+
+            var saveAttachment = await _dataBaseService.SaveAttachment(answerId, file);
+            if (saveAttachment.IsNonSuccess)
+            {
+                return attachmentResult;
+            }
+
+            attachmentResult.IsSuccess = true;
+
+            return attachmentResult;
         }
     }
 }
