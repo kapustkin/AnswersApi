@@ -1,9 +1,8 @@
-﻿using System;
+﻿using AnswersApi.Common.Models;
+using AnswersApi.Common.Models.Base;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AnswersApi.Common.Models;
-using AnswersApi.Common.Models.Base;
-using Microsoft.AspNetCore.Http;
 
 namespace AnswersApi.Common.Interfaces
 {
@@ -18,8 +17,8 @@ namespace AnswersApi.Common.Interfaces
         /// <param name="answerId">Идентификатор ответа</param>
         /// <param name="files">Список файлов</param>
         /// <returns></returns>
-        Task<DataResult<bool?>> AttachmentFiles(Guid answerId, IEnumerable<IFormFile> files);
-        
+        Task<DataResult<IList<AttachmentResult>>> AttachmentFiles(Guid answerId, IEnumerable<AttachmentFile> files);
+
         /// <summary>
         /// Метод сохраняет события
         /// </summary>

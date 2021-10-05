@@ -1,7 +1,6 @@
 ﻿using AnswersApi.Common.Interfaces;
 using AnswersApi.Common.Models;
 using AnswersApi.Common.Models.Base;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ namespace AnswersApi.Services
     public class AnswersService : IAnswersService
     {
         private const string ErrorMessageSaveEvents = "Ошибка при сохранении информации о событиях в базу данных";
-        private const string ErrorMessageSaveAttachments = "Ошибка при сохранении информации о файлах в базу данных";
+        private const string ErrorMessageSaveAttachments = "Пустой список файлов не допускается";
 
         private readonly IDataBaseService _dataBaseService;
         private readonly IStorageService _storageService;
@@ -27,42 +26,43 @@ namespace AnswersApi.Services
             _storageService = storageService;
         }
 
-        public async Task<DataResult<bool?>> AttachmentFiles(Guid answerId, IEnumerable<IFormFile> files)
+        public async Task<DataResult<IList<AttachmentResult>>> AttachmentFiles(Guid answerId, IEnumerable<AttachmentFile> files)
         {
-            //TODO можно оптимизировать
-            //Что делать если загрузилась только часть файлов?
-            //Какой ответ в этом случае ожидается? 
-            //Требуется ли при ошибке делать откат изменений?
+            if (files == null) return new DataResult<IList<AttachmentResult>>
+            {
+                ErrorMessage = ErrorMessageSaveAttachments
+            };
+
+            var result = new DataResult<IList<AttachmentResult>>()
+            {
+                Result = new List<AttachmentResult>()
+            };
+
             foreach (var file in files)
             {
-                var upload = await _storageService.UploadAsync(file.OpenReadStream(), file.FileName, file.ContentType);
+                var attachmentResult = new AttachmentResult
+                {
+                    FileName = file.FileName
+                };
+
+                result.Result.Add(attachmentResult);
+
+                var upload = await _storageService.UploadAsync(file.Stream, file.FileName, file.MimeType);
                 if (upload.IsNonSuccess)
                 {
-                    return new DataResult<bool?>
-                    {
-                        Result = false,
-                        ErrorMessage = "При загрузке файлов произошла ошибка"
-                    };
+                    continue;
                 }
 
-                var saveAttachment = await _dataBaseService.SaveAttachment(answerId, new AttachmentInfo()
-                {
-                    Created = DateTime.Now,
-                    Size = file.Length,
-                    FileName = file.FileName,
-                    MimeType = file.ContentType
-                });
+                var saveAttachment = await _dataBaseService.SaveAttachment(answerId, file);
                 if (saveAttachment.IsNonSuccess)
                 {
-                    return new DataResult<bool?>
-                    {
-                        Result = saveAttachment.Result,
-                        ErrorMessage = ErrorMessageSaveAttachments
-                    };
+                    continue;
                 }
+
+                attachmentResult.IsSuccess = true;
             }
 
-            return new DataResult<bool?> { Result = true };
+            return result;
         }
 
         public async Task<DataResult<bool?>> SaveEvents(Guid answerId, IEnumerable<AnswerEvent> events)

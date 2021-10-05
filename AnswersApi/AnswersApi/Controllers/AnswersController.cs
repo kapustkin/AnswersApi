@@ -1,4 +1,5 @@
 ﻿using AnswersApi.Common.Interfaces;
+using AnswersApi.Common.Models.Base;
 using AnswersApi.Controllers.Base;
 using AnswersApi.Models;
 using AutoMapper;
@@ -38,8 +39,11 @@ namespace AnswersApi.Controllers
         [HttpPost("attachments"), DisableRequestSizeLimit]
         public async Task<ActionResult> Attachments(Guid answerId, IEnumerable<IFormFile> files)
         {
-            var result = await _answersService.AttachmentFiles(answerId, files);
-            return Result(result);
+            var result = await _answersService.AttachmentFiles(answerId, _mapper.Map<IEnumerable<Common.Models.AttachmentFile>>(files));
+            return Result(new DataResult<IEnumerable<AttachmentResult>>()
+            {
+                Result = _mapper.Map<IEnumerable<AttachmentResult>>(result.Result)
+            });
         }
 
         /// <summary>
@@ -49,7 +53,7 @@ namespace AnswersApi.Controllers
         /// <param name="events">Список событий</param>
         /// <returns></returns>
         [HttpPost("events")]
-        public async Task<ActionResult> Events(Guid answerId, [FromBody] AnswerEvent[] events)
+        public async Task<ActionResult> Events(Guid answerId, [FromBody] Models.AnswerEvent[] events)
         {
             var result = await _answersService.SaveEvents(answerId, _mapper.Map<Common.Models.AnswerEvent[]>(events));
             return Result(result);

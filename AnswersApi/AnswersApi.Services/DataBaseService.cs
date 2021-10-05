@@ -33,7 +33,7 @@ namespace AnswersApi.Services
         {
             try
             {
-                await _context.AnswerAttachments.AddRangeAsync(attachment.Select(s => new Context.Models.AnswerAttachment()
+                await _context.AnswerAttachments.AddRangeAsync(attachment.Select(s => new Context.Models.AnswerAttachment
                 {
                     Id = new Guid(),
                     AnswerId = answerId,
@@ -45,7 +45,7 @@ namespace AnswersApi.Services
 
                 var result = await _context.SaveChangesAsync();
 
-                return new DataResult<bool>()
+                return new DataResult<bool>
                 {
                     Result = result > 0
                 };
@@ -53,7 +53,7 @@ namespace AnswersApi.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при сохранении информации о файлах в базу данных");
-                return new DataResult<bool>()
+                return new DataResult<bool>
                 {
                     ErrorMessage = ex.Message
                 };
@@ -64,7 +64,7 @@ namespace AnswersApi.Services
         {
             try
             {
-                await _context.AnswerEvents.AddRangeAsync(events.Select(s => new Context.Models.AnswerEvent()
+                await _context.AnswerEvents.AddRangeAsync(events.Select(s => new Context.Models.AnswerEvent
                 {
                     Id = new Guid(),
                     AnswerId = answerId,
@@ -75,7 +75,7 @@ namespace AnswersApi.Services
 
                 var result = await _context.SaveChangesAsync();
 
-                return new DataResult<bool>()
+                return new DataResult<bool>
                 {
                     Result = result > 0
                 };
@@ -83,7 +83,7 @@ namespace AnswersApi.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при сохранении событий в базу данных");
-                return new DataResult<bool>()
+                return new DataResult<bool>
                 {
                     ErrorMessage = ex.Message
                 };

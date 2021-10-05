@@ -43,10 +43,10 @@ namespace AnswersApi.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при сохранении файла в хранилище");
+                _logger.LogError(ex, $"Ошибка при сохранении файла '{fileName}' в хранилище");
                 return new DataResult<string>
                 {
-                    Result = ex.Message
+                    ErrorMessage = ex.Message
                 };
             }
         }

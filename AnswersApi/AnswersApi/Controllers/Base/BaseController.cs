@@ -10,7 +10,7 @@ namespace AnswersApi.Controllers.Base
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected static ActionResult Error(object message)
+        private static ActionResult Error(object message)
         {
             // добавить запись ошибок в лог или прометеус
             return new BadRequestObjectResult(message);
